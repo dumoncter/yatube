@@ -10,8 +10,7 @@ urlpatterns = [
     # Подробная информация о мороженом. Ждем пременную типа int,
     # и будем использовать ее под именем pk
     path(
-        'group'
-        '/<slug:slug>/',
+        'posts/<slug:slug>/',
         views.group_posts
     ),
 ]
