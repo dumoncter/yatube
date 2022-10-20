@@ -1,42 +1,27 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Post, Group
+from django.shortcuts import get_object_or_404, render
+
+from .models import Group, Post
 
 
 def index(request):
-    # Одна строка вместо тысячи слов на SQL:
-    # в переменную posts будет сохранена выборка из 10 объектов модели Post,
-    # отсортированных по полю pub_date по убыванию (от больших значений к меньшим)
+    """ 10 post entries """
+
     posts = Post.objects.order_by('-pub_date')[:10]
-    # В словаре context отправляем информацию в шаблон
+    template = 'posts/index.html'
     context = {
-        'posts': posts,
-    }
-    return render(request, 'posts/index.html', context)
-
-
-def group_list(request):
-    template = 'posts/group_list.html'
-    text = 'Здесь будет информация о группах проекта Yatube'
-    context = {
-        'text': text,
+        'posts': posts
     }
     return render(request, template, context)
 
 
-# В урл мы ждем парметр, и нужно его прередать в функцию для использования
 def group_posts(request, slug):
-    # Функция get_object_or_404 получает по заданным критериям объект
-    # из базы данных или возвращает сообщение об ошибке, если объект не найден.
-    # В нашем случае в переменную group будут переданы объекты модели Group,
-    # поле slug у которых соответствует значению slug в запросе
-    group = get_object_or_404(Group, slug=slug)
+    """ 10 group entries """
 
-    # Метод .filter позволяет ограничить поиск по критериям.
-    # Это аналог добавления
-    # условия WHERE group_id = {group_id}
-    posts = Post.objects.filter(group=group).order_by('-pub_date')[:10]
+    group = get_object_or_404(Group, slug=slug)
+    posts = Post.objects.filter(group=group).order_by('-pub_date')
+    template = 'posts/group_list.html'
     context = {
         'group': group,
-        'posts': posts,
+        'posts': posts
     }
-    return render(request, 'posts/group_list.html', context)
+    return render(request, template, context)
